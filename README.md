@@ -79,46 +79,13 @@ namespace Shopping.Models
 
 
 
-namespace Online_Shopping.DAL
-{
-    using System;
-    using System.Data.Entity;
-    using System.Data.Entity.Infrastructure;
-
-    public partial class Online_ShoppingEntities : DbContext
-    {
-        public Online_ShoppingEntities()
-            : base("name=Online_ShoppingEntities")
-        {
-
-        }
-
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {
-            throw new UnintentionalCodeFirstException();
-        }
-        public DbSet<Tbl_Category> Tbl_Category { get; set; }
-        public DbSet<Tbl_Members> Tbl_Members { get; set; }
-        public DbSet<Tbl_Product> Tbl_Product { get; set; }
-    }
-}
 
 using System.Collections.Generic;
 using System.Web;
- 
-/**
- * The ShoppingCart class
- */
+
 public class ShoppingCart {
-    #region Properties
-     
-    public List<CartItem> Items { get; private set; }
-     
-    #endregion
- 
-    #region Singleton Implementation
- 
- 
+   public List<CartItem> Items { get; private set; }
+
         if (HttpContext.Current.Session["ASPNETShoppingCart"] == null) {
             Instance = new ShoppingCart();
             Instance.Items = new List<CartItem>();
@@ -128,13 +95,10 @@ public class ShoppingCart {
         }
     }
 
- 
-    #endregion
- 
-    #region Item Modification Methods
     /**
      * AddItem() - Adds an item to the shopping 
      */
+     
     public void AddItem(int productId) {
         // Create a new item to add to the cart
         CartItem newItem = new CartItem(productId);
@@ -173,6 +137,8 @@ public class ShoppingCart {
     /**
      * RemoveItem() - Removes an item from the shopping cart
      */
+     
+     
     public void RemoveItem(int productId) {
         CartItem removedItem = new CartItem(productId);
         Items.Remove(removedItem);
@@ -275,8 +241,7 @@ public class Product
 }
 
 
- 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ HTML:
  
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
@@ -340,9 +305,26 @@ protected void Page_Load(object sender, EventArgs e)
     }
     
     //
-
-SELECT userID, Customers.CustomerName, Shippers.ShipperName
-FROM ((Orders
-INNER JOIN Customers ON Orders.CustomerID = Customers.CustomerID)
-INNER JOIN Shippers ON Orders.ShipperID = Shippers.ShipperID);
+ SQL
+ SELECT 
+  c.OrderID,
+  SUM(c.Quantity) AS products_number,
+  SUM(s.QuantityInShipment) as shipped_items_number
+FROM
+( 
+  Inventory i,
+  ShoppingCart c
+)
+LEFT JOIN
+  ShippedItems s
+ON
+  c.OrderID = s.OrderID
+WHERE
+  i.ProductID = c.ItemID AND
+  c.OrderID = t.OrderID AND
+  s.CartID = c.ID
+GROUP BY
+  c.OrderID
+HAVING
+  SUM(c.Quantity) > SUM(s.QuantityInShipment)
 
