@@ -153,7 +153,7 @@ public class CartItem : IEquatable<CartItem> {
     public int ProductId {
         get { return _productId; }
         set {
-            // To ensure that the Prod object will be re-created
+            //  Prod object will be re-created
             _product = null;
             _productId = value;
         }
