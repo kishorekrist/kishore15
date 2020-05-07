@@ -77,24 +77,6 @@ namespace Shopping.Models
     }
 }
 
-
-
-
-using System.Collections.Generic;
-using System.Web;
-
-public class ShoppingCart {
-   public List<CartItem> Items { get; private set; }
-
-        if (HttpContext.Current.Session["ASPNETShoppingCart"] == null) {
-            Instance = new ShoppingCart();
-            Instance.Items = new List<CartItem>();
-            HttpContext.Current.Session["ASPNETShoppingCart"] = Instance;
-        } else {
-            Instance = (ShoppingCart)HttpContext.Current.Session["ASPNETShoppingCart"];
-        }
-    }
-
     /**
      * AddItem() - Adds an item to the shopping 
      */
